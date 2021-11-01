@@ -12,7 +12,6 @@ public class App {
     public static void main(String[] args) {
         //TODO Initialize the SeContainer
         try (SeContainer container = null) {
-
             System.out.println("Starting the NameLoaderStartup class");
 
             Supplier<Set<String>> loaderStartup = container.select(NameLoaderStartup.class).get();

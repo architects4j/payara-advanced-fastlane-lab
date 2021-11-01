@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 // TODO Annotate this bean with ApplicationScoped and StartUp
 
+
 public class NameLoaderStartup implements Supplier<Set<String>> {
 
     private static final Logger LOGGER = Logger.getLogger(NameLoaderStartup.class.getName());

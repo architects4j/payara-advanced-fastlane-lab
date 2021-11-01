@@ -26,7 +26,7 @@ public class StartupBeanExtension {
      * To know more about the ProcessBean event and other CDI lifecycle events, check:
      * https://jakarta.ee/specifications/cdi/2.0/cdi-spec-2.0.html#process_bean
      */
-    private void processBean(@Observes ProcessBean event) {
+    private void processBean(ProcessBean event) {
         Annotated annotated = event.getAnnotated();
 
         /**
@@ -39,7 +39,6 @@ public class StartupBeanExtension {
             /**
              * TODO: Obtain the bean from the event object, and add it to the startupBeans list.
              */
-
         }
 
         // Adds every processed bean to the list of processed beans when a ProcessBean event was fired.
@@ -59,7 +58,7 @@ public class StartupBeanExtension {
         // Initialize all beans annotated with @StartUp
         for (Object bean : startupBeans) {
             // Use to toString() "Workaround" as a way to initialize every reference of the beans annotated with @StartUp
-//            manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean)).toString();
+            //manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean)).toString();
         }
     }
 }

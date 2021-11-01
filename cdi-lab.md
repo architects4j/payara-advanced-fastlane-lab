@@ -61,8 +61,11 @@ We'll use these two sets to do custom logic but also to understand the behavior 
 1. On lines 19 and 22, we have two lists (`java.util.Set`) in our application: startupBeans and allProcessedBeans. In this lists we will store the beans that we will intercept in the events fired in CDI lifecycle. The sets will store objects that are managed beans. Therefore, adjust both Set to store Bean<?>. It will look like:
 
    ```java
-   private final Set<Bean<?>> startupBeans = new LinkedHashSet<>();
-   private final Set<Bean<?>> allProcessedBeans = new LinkedHashSet<>();
+       // Will store all the Bean<?> annotated with @StartUp
+       private final Set<Bean<?>> startupBeans = new LinkedHashSet<>();
+   
+       // Will store all the Bean<?> intercepted during the ProcessBean event, part of the the CDI Lifecycle.
+       private final Set<Bean<?>> allProcessedBeans = new LinkedHashSet<>();
    ```
 
 **Reacting to ProcessBean events**
@@ -143,7 +146,19 @@ To test what we did so far, let's configure new bean to use the @StartUp annotat
    2. How many beans did you store in your list when you did not filter the exact bean type you wanted?
    3. Do you think the bean `NameLoaderStartup` was initialized during the application initialization or only when you injected it for the first time? (Eager or lazy bean initialization?)
 
-   #TODO KARINA REVER
+
+Here's a log output that should be similar to the expected output at this point:
+
+```
+Nov 01, 2021 7:37:23 PM org.jboss.weld.environment.se.WeldContainer fireContainerInitializedEvent
+INFO: WELD-ENV-002003: Weld SE container bf5506d1-9c7b-4410-bcb5-75ec449073eb initialized
+Starting the NameLoaderStartup class
+Nov 01, 2021 7:37:23 PM my.company.cdi.demo.load.NameLoaderStartup onStartup
+INFO: it will load eagerly
+The fakes names[Super Saiyan Goten, Super Saiyan 2 Goku, Majin Vegeta, Super Saiyan 2 Vegeta, King Vegeta, Super Saiyan 2 Gohan, Su Shenlong, Android 18, Bardock, Hit, Nail, King Cold, Captain Ginyu, San Shenlong, Super Saiyan Goku]
+Nov 01, 2021 7:37:26 PM org.jboss.weld.environment.se.WeldContainer shutdown
+INFO: WELD-ENV-002001: Weld SE container bf5506d1-9c7b-4410-bcb5-75ec449073eb shut down
+```
 
 ##### Eager Bean Initialization
 
@@ -169,10 +184,31 @@ for (Bean<?> bean : startupBeans) {
    //            manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean)).toString();
    ```
 
-6. What do you think this method does? 
+6. What do you think this code does? 
 
 7. Uncomment this code, and run the `App` class again. Observe the log output. If you couldn't spot differences, try commenting it again, running the app and comparing.
 8. What changed? Why?
+
+Here's an example of expected output at this point:
+
+```
+Nov 01, 2021 7:39:04 PM org.jboss.weld.bootstrap.WeldStartup <clinit>
+INFO: WELD-000900: 3.1.8 (Final)
+Nov 01, 2021 7:39:04 PM org.jboss.weld.bootstrap.WeldStartup startContainer
+INFO: WELD-000101: Transactional services not available. Injection of @Inject UserTransaction not available. Transactional observers will be invoked synchronously.
+Nov 01, 2021 7:39:04 PM my.company.cdi.demo.extension.StartupBeanExtension processBean
+INFO: ===> New bean with @StartUp found: Managed Bean [class my.company.cdi.demo.load.NameLoaderStartup] with qualifiers [@Any @Default]
+Nov 01, 2021 7:39:04 PM my.company.cdi.demo.extension.StartupBeanExtension afterDeploymentValidation
+INFO: ===> Number of classes with @StartUp: 1, Total number of intercepted beans at ProcessBean phase: 50
+Nov 01, 2021 7:39:04 PM my.company.cdi.demo.load.NameLoaderStartup onStartup
+INFO: it will load eagerly
+Nov 01, 2021 7:39:06 PM org.jboss.weld.environment.se.WeldContainer fireContainerInitializedEvent
+INFO: WELD-ENV-002003: Weld SE container ca4577b8-0120-48b1-8e3b-6062ed803d7f initialized
+Nov 01, 2021 7:39:06 PM org.jboss.weld.environment.se.WeldContainer shutdown
+INFO: WELD-ENV-002001: Weld SE container ca4577b8-0120-48b1-8e3b-6062ed803d7f shut down
+Starting the NameLoaderStartup class
+The fakes names[Super Saiyan Trunks, Oolong, Majin Vegeta, Garlic Jr, Super Saiyan Blue Vegeta, Super Saiyan 2 Gohan, Vegito, Su Shenlong, Android 18, Super Saiyan Vegeta, Goku, Vados, Mystic Gohan, Freeza, Super Saiyan Goku]
+```
 
 ## Congratulations
 
