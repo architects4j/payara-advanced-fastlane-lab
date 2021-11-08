@@ -1,5 +1,7 @@
 ## Asyncronous processing with JAX-RS
 
+In this lab you will start a new application from scratch and explore the different ways the threads and the processing behaves with sync/async endpoints.
+
 1. Create a new payara micro app
 2. Open the `RestlabRestApplication` class and change the @ApplicationPath to `@ApplicationPath("/")`.
 
