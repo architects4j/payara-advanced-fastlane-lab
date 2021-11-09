@@ -1,0 +1,2 @@
+#TODO: Add the FQDN of your CDI portable extension here.
+my.company.cdi.demo.extension.StartupBeanExtension
